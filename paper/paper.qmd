@@ -1,0 +1,92 @@
+---
+title: "Digital Land: Data Center Announcements and the Capture of Community-Created Value in Georgia"
+author: "Damian Krotov"
+date: last-modified
+format:
+  pdf:
+    number-sections: true
+    fig-pos: "t"
+bibliography: references.bib
+execute:
+  echo: false
+  warning: false
+---
+
+```{python}
+#| label: load-results
+import json
+from pathlib import Path
+
+res_path = Path("../output/results.json")
+res = json.loads(res_path.read_text()) if res_path.exists() else {}
+main = res.get("main", {})
+mc = res.get("monte_carlo", {})
+
+def pct(x, digits=1):
+    """log points -> % for prose; returns TODO string when results are absent."""
+    return f"{100 * x:.{digits}f}%" if isinstance(x, (int, float)) else "TODO_RUN_P3"
+```
+
+<!--
+Every empirical number in this document is interpolated from output/results.json
+(or refs/sources.md for institutional facts) — never hand-typed. If a value shows
+TODO_RUN_P3, the estimation phase has not produced results yet.
+Structure per CLAUDE.md P6; framing per ARCHITECTURE §12.
+-->
+
+# Introduction
+
+<!-- Hook: the $26M land / $1.8B servers split from the DOAA audit; the question
+"who captures the value when the cloud touches the ground?"; contributions:
+(1) first Georgia evidence, (2) announcement-timing design, (3) hand-built
+event dataset; preview of findings. -->
+
+# Background: Georgia's data center boom and George's rent
+
+<!-- §2 of ARCHITECTURE: exemption cost ~$2.5B FY2026 (DOAA audit), 9,985 MW
+PSC certification ~80% data centers, failed 2026 bills, phantom-load evidence
+(Exelon ~22%, E3 telemetry). Henry George: settler parable (quote checked
+against primary text), land vs. capital, exemption as inverse-George,
+speculation and socialized risk. Cite refs/sources.md items only. -->
+
+# Data
+
+<!-- D1 hand-built announcement events (n = `{python} main.get("n_treated_zips", "TODO_RUN_P3")`
+treated ZIPs after verification); D2 Zillow ZHVI ZIP monthly smoothed SA;
+D3 ZCTA polygons + ACS covariates; ZIP≈ZCTA caveat. Map + timeline figures
+from output/events_qc.html analogs. -->
+
+# Empirical strategy
+
+<!-- Callaway–Sant'Anna group-time ATTs, not-yet-treated controls, doubly robust,
+anticipation = 3; why static TWFE fails (Goodman-Bacon); ring-1 exclusion;
+pre-committed hypotheses H1a/H1b/H0 (this file was committed to git before
+estimation — cite commit hash). -->
+
+# Results
+
+The headline simple ATT on log home value is `{python} pct(main.get("att_simple"))`
+(95% CI `{python} pct(main.get("ci_lo"))` to `{python} pct(main.get("ci_hi"))`),
+across `{python} main.get("n_treated_zips", "TODO_RUN_P3")` treated ZIPs against
+`{python} main.get("n_control_zips", "TODO_RUN_P3")` never/not-yet-treated controls.
+
+![Event-study path of announcement effects](../output/figs/eventstudy.pdf)
+
+# Robustness
+
+<!-- Table from output/tables/robustness_table.html; placebo p-value; overlap plot. -->
+
+# Who bears the risk that the value never arrives?
+
+<!-- RQ2: stipulation mechanics; ILLUSTRATIVE Monte Carlo fan chart
+(output/figs/stranded_fan.pdf); land value capture as remedy. -->
+
+![ILLUSTRATIVE stranded-cost simulation](../output/figs/stranded_fan.pdf)
+
+# Limitations
+
+<!-- The seven items of ARCHITECTURE §7, verbatim in spirit: siting endogeneity,
+date measurement error, ZIP aggregation masking hyperlocal effects, SUTVA,
+scope, AI disclosure pointer. -->
+
+# References
