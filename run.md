@@ -3,10 +3,17 @@
 Environment (once):
 
 ```bash
-brew install git quarto r uv          # done 2026-07-03
+brew install git r uv                 # done 2026-07-03
+# quarto: brew cask needs sudo; installed instead to ~/.local/opt (v1.9.38) with
+# a symlink at ~/.local/bin/quarto — add ~/.local/bin to PATH in ~/.zshrc.
+# TinyTeX installed via `quarto install tinytex`.
 uv sync                               # creates .venv from pyproject.toml/uv.lock
-Rscript src/r/00_setup_packages.R     # installs pinned R packages via renv
-export CENSUS_API_KEY=...             # optional; pipeline falls back to keyless ACS calls
+Rscript src/r/00_setup_packages.R     # done 2026-07-04 (renv.lock written)
+export CENSUS_API_KEY=...             # REQUIRED for ACS: Census API no longer serves
+                                      # keyless requests (checked 2026-07-03).
+                                      # Sign up: https://api.census.gov/data/key_signup.html
+# render with the venv python:
+#   QUARTO_PYTHON=.venv/bin/python quarto render paper/paper.qmd
 ```
 
 Pipeline (from repo root):

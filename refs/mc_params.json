@@ -1,0 +1,15 @@
+{
+  "verified": false,
+  "_instructions": "Damian: check every number against refs/sources.md (S5, S6, S9 URLs), then set verified: true. monte_carlo.py refuses to run until then.",
+  "mw_certified": 9885,
+  "_mw_note": "PSC Dec 19 2025 release figure; the Mar 2026 fact sheet says 9,985 (discrepancy documented in sources.md C2)",
+  "capex_usd_per_kw_low": 1032,
+  "capex_usd_per_kw_high": 1086,
+  "_capex_note": "EIA AEO2026 EMM assumptions Table 3 (2025$, CCGT multi-shaft/single-shaft, no CCS); Atlanta multiplier ~1.02 not applied; trade-press turnkey quotes run higher — this is a conservative reference range",
+  "scenarios": {
+    "optimistic": 0.8,
+    "base": 0.5,
+    "exelon_like": 0.22
+  },
+  "_scenario_note": "p_materialize means; exelon_like from POWER Magazine 2026-05-15 (22% of 65-GW pipeline)"
+}

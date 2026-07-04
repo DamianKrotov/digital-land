@@ -70,7 +70,12 @@ The headline simple ATT on log home value is `{python} pct(main.get("att_simple"
 across `{python} main.get("n_treated_zips", "TODO_RUN_P3")` treated ZIPs against
 `{python} main.get("n_control_zips", "TODO_RUN_P3")` never/not-yet-treated controls.
 
-![Event-study path of announcement effects](../output/figs/eventstudy.pdf)
+```{python}
+#| output: asis
+fig = Path("../output/figs/eventstudy.pdf")
+print("![Event-study path of announcement effects](../output/figs/eventstudy.pdf)"
+      if fig.exists() else "*(Event-study figure pending: run `make estimate` after verification.)*")
+```
 
 # Robustness
 
@@ -81,7 +86,12 @@ across `{python} main.get("n_treated_zips", "TODO_RUN_P3")` treated ZIPs against
 <!-- RQ2: stipulation mechanics; ILLUSTRATIVE Monte Carlo fan chart
 (output/figs/stranded_fan.pdf); land value capture as remedy. -->
 
-![ILLUSTRATIVE stranded-cost simulation](../output/figs/stranded_fan.pdf)
+```{python}
+#| output: asis
+fan = Path("../output/figs/stranded_fan.pdf")
+print("![ILLUSTRATIVE stranded-cost simulation](../output/figs/stranded_fan.pdf)"
+      if fan.exists() else "*(Fan chart pending: verify refs/mc_params.json, then run `make mc`.)*")
+```
 
 # Limitations
 
