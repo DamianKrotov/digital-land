@@ -1,0 +1,49 @@
+event_id,zcta,g_mo,investment_usd_m,company
+GA001,30233,300,11000.0,Amazon Web Services
+GA002,30135,300,0.0,Amazon Web Services
+GA003,30291,291,1800.0,Microsoft
+GA004,30161,285,1000.0,Microsoft
+GA005,30214,271,1000.0,QTS
+GA006,30263,300,17000.0,Atlas Development (Prologis under contract)
+GA008,30025,218,750.0,Meta (Facebook)
+GA009,30025,248,1000.0,Meta (Facebook)
+GA009B,30025,263,0.0,Meta (Facebook)
+GA010,30122,185,300.0,Google
+GA012,31029,309,0.0,Google
+GA013,30268,250,420.0,Microsoft
+GA014,30344,253,0.0,Microsoft
+GA015,30214,310,0.0,Microsoft
+GA016,30122,208,2500.0,Switch
+GA017,30120,284,772.0,Switch
+GA018,30263,289,1500.0,T5 Data Centers
+GA019,30122,286,1150.0,DC BLOX
+GA020,30012,287,0.0,DC BLOX
+GA021,30122,285,380.9,STACK Infrastructure
+GA022,31217,308,5000.0,Eagle Rock Partners
+GA023,30178,302,19000.0,Unnamed developer (Project Bunkhouse)
+GA024,31029,310,21000.0,Trammell Crow Co.
+GA025,30134,283,0.0,Vantage Data Centers
+GA026,30213,295,0.0,Vantage Data Centers
+GA027,30009,295,0.0,Vantage Data Centers
+GA028,30303,282,0.0,Edged Energy (Endeavour)
+GA029,30336,268,0.0,DataBank
+GA030,30122,285,0.0,DataBank
+GA031,30122,253,0.0,Microsoft
+GA032,30134,266,0.0,Flexential
+GA033,30303,255,0.0,QTS
+GA034,30024,276,0.0,QTS
+GA035,30901,293,2000.0,QTS (Eagle South LLC)
+GA036,39823,310,0.0,QTS
+GA037,30297,305,2000.0,Digital Realty
+GA038,30014,300,0.0,Serverfarm
+GA039,30025,300,0.0,TPA Group
+GA040,30025,298,0.0,Sailfish Investors
+GA041,30014,302,5700.0,Universal Planning and Development LLC
+GA042,30121,301,4500.0,Atlas Development LLC
+GA043,30277,303,0.0,CyrusOne (North Coweta Investors LLC)
+GA044,30204,307,0.0,Amazon Web Services (Amazon Data Services)
+GA045,30014,288,0.0,Amazon Web Services (Amazon Data Services)
+GA046,30294,297,0.0,TA Realty
+GA047,31210,307,0.0,Unnamed developer (landowners Newnam/Doss/Ingram)
+GA048,31032,309,0.0,EagleRock Partners
+GA049,30308,263,0.0,H5 Data Centers

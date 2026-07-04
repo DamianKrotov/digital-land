@@ -32,7 +32,7 @@ RAW = ROOT / "data" / "raw"
 PROC = ROOT / "data" / "processed"
 
 GA_ZIP_PREFIXES = ("30", "31", "398", "399")
-PANEL_START = "2015-01"  # keep runway for pre-trends; assert coverage back to 2018-01
+PANEL_START = "2012-01"  # runway for pre-trends incl. pre-window events (2015/2017/2018 groups)
 
 
 def month_index(dates: pd.Series) -> pd.Series:

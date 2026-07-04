@@ -35,17 +35,27 @@ atts <- att_gt(
   xformla       = ~ log_pop + log_inc,
   data          = est_data,
   control_group = "notyettreated",
-  est_method    = "dr",
+  # DEVIATION from the pre-registered est_method="dr", documented 2026-07-04:
+  # most announcement cohorts contain a single treated ZIP, so the propensity
+  # score inside the doubly-robust estimator cannot be fit and ~all ATT(g,t)
+  # come back NA. The outcome-regression estimator keeps the covariate
+  # adjustment and works with singleton cohorts; dr-without-covariates and
+  # ipw variants are reported in the robustness table.
+  est_method    = "reg",
   anticipation  = 3,
   clustervars   = "zip_id",
-  base_period   = "universal"
+  base_period   = "universal",
+  # ZHVI doesn't cover every ZIP back to 2012; forcing balance drops treated
+  # cohorts entirely (did internal error). Keep the unbalanced panel instead.
+  allow_unbalanced_panel = TRUE
 )
+
+dir.create("output/models", recursive = TRUE, showWarnings = FALSE)
+saveRDS(atts, "output/models/att_gt.rds")  # save before aggregation so failures are debuggable
 
 dyn <- aggte(atts, type = "dynamic", min_e = -24, max_e = 36, na.rm = TRUE)
 simple <- aggte(atts, type = "simple", na.rm = TRUE)
 
-dir.create("output/models", recursive = TRUE, showWarnings = FALSE)
-saveRDS(atts,   "output/models/att_gt.rds")
 saveRDS(dyn,    "output/models/aggte_dynamic.rds")
 saveRDS(simple, "output/models/aggte_simple.rds")
 
@@ -54,7 +64,7 @@ res_path <- "output/results.json"
 results <- if (file.exists(res_path)) fromJSON(res_path, simplifyVector = FALSE) else list()
 crit <- if (!is.null(dyn$crit.val.egt) && is.finite(dyn$crit.val.egt)) dyn$crit.val.egt else qnorm(0.975)
 results$main <- list(
-  spec            = "CS notyettreated dr anticipation=3 xformla=log_pop+log_inc universal base",
+  spec            = "CS notyettreated reg anticipation=3 xformla=log_pop+log_inc universal base (dr infeasible: singleton cohorts)",
   att_simple      = simple$overall.att,
   se_simple       = simple$overall.se,
   ci_lo           = simple$overall.att - qnorm(0.975) * simple$overall.se,
@@ -62,7 +72,12 @@ results$main <- list(
   n_treated_zips  = length(unique(est_data$zip_id[est_data$g_mo > 0])),
   n_control_zips  = length(unique(est_data$zip_id[est_data$g_mo == 0])),
   n_ring1_dropped = n_ring_dropped,
-  pretrend_wald_p = tryCatch(atts$Wpval, error = function(e) NA)
+  # did's joint Wald (Wpval) is not returned on this unbalanced panel; report
+  # the transparent pre-period summary from the dynamic path instead.
+  pretrend_wald_p = tryCatch(
+    if (is.null(atts$Wpval) || length(atts$Wpval) == 0) NA else atts$Wpval,
+    error = function(e) NA
+  )
 )
 writeLines(toJSON(results, auto_unbox = TRUE, pretty = TRUE, digits = 8, na = "null"), res_path)
 
@@ -74,6 +89,12 @@ es <- tibble(
 ) |>
   mutate(ci_lo = att - crit * se, ci_hi = att + crit * se,
          phase = if_else(e < 0, "pre", "post"))
+
+pre <- es |> filter(e < 0, !is.na(att), !is.na(se))
+results$main$pretrend_n <- nrow(pre)
+results$main$pretrend_n_sig_5pct <- sum(abs(pre$att / pre$se) > qnorm(0.975))
+results$main$pretrend_mean_att <- mean(pre$att)
+writeLines(toJSON(results, auto_unbox = TRUE, pretty = TRUE, digits = 8, na = "null"), res_path)
 
 dir.create("output/figs", recursive = TRUE, showWarnings = FALSE)
 writeLines(toJSON(es, dataframe = "rows", pretty = TRUE, digits = 8, na = "null"),

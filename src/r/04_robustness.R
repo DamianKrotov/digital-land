@@ -18,12 +18,15 @@ set.seed(51)
 panel <- read_parquet("data/processed/panel.parquet")
 base_data <- panel |> filter(!(ring1 & g_mo == 0))
 
-run_cs <- function(data, label, control = "notyettreated", anticip = 3, boot = TRUE) {
+run_cs <- function(data, label, control = "notyettreated", anticip = 3, boot = TRUE,
+                   method = "reg", xf = ~ log_pop + log_inc) {
+  # est_method="reg" mirrors 03_estimation.R (dr infeasible with singleton cohorts)
   m <- att_gt(
     yname = "log_zhvi", tname = "mo", idname = "zip_id", gname = "g_mo",
-    xformla = ~ log_pop + log_inc, data = data,
-    control_group = control, est_method = "dr", anticipation = anticip,
-    clustervars = "zip_id", base_period = "universal", bstrap = boot, cband = FALSE
+    xformla = xf, data = data,
+    control_group = control, est_method = method, anticipation = anticip,
+    clustervars = "zip_id", base_period = "universal", bstrap = boot, cband = FALSE,
+    allow_unbalanced_panel = TRUE
   )
   s <- aggte(m, type = "simple", na.rm = TRUE)
   tibble(spec = label, att = s$overall.att, se = s$overall.se,
@@ -37,6 +40,11 @@ rows$main <- run_cs(base_data, "(0) main: not-yet-treated, anticipation 3")
 
 # (a) never-treated controls
 rows$nev <- run_cs(base_data, "(a) never-treated controls", control = "nevertreated")
+
+# (a') estimator variants (the pre-registered dr is infeasible with covariates
+# on singleton cohorts; these bracket the covariate/estimator choice)
+rows$drnc <- run_cs(base_data, "(a') dr, no covariates", method = "dr", xf = ~1)
+rows$ipw <- run_cs(base_data, "(a'') ipw + covariates", method = "ipw")
 
 # (b) Sun–Abraham interaction-weighted event study (fixest::sunab)
 sa_data <- base_data |> mutate(g_sa = if_else(g_mo == 0, 10000L, as.integer(g_mo)))

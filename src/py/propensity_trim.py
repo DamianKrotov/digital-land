@@ -50,11 +50,16 @@ def main() -> None:
     X = pool[["log_pop", "log_inc", "base_level", "base_trend"]]
     y = pool["treated"]
     clf = lgb.LGBMClassifier(
-        n_estimators=200, learning_rate=0.05, max_depth=3,
+        n_estimators=100, learning_rate=0.05, num_leaves=7, min_child_samples=25,
         random_state=51, deterministic=True, force_row_wise=True, verbose=-1,
     )
-    clf.fit(X, y)
-    pool = pool.assign(pscore=clf.predict_proba(X)[:, 1])
+    # out-of-fold scores: in-sample predict_proba memorizes n~500 rows and
+    # produces degenerate 0/1 scores (a first run kept 8/466 controls)
+    from sklearn.model_selection import StratifiedKFold, cross_val_predict
+
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=51)
+    pscore = cross_val_predict(clf, X, y, cv=cv, method="predict_proba")[:, 1]
+    pool = pool.assign(pscore=pscore)
 
     t = pool[pool["treated"] == 1]["pscore"]
     c = pool[pool["treated"] == 0]["pscore"]
