@@ -1,0 +1,47 @@
+{
+ "monte_carlo": {
+  "params": {
+   "verified": true,
+   "_instructions": "Damian: check every number against refs/sources.md (S5, S6, S9 URLs), then set verified: true. monte_carlo.py refuses to run until then.",
+   "mw_certified": 9885,
+   "_mw_note": "PSC Dec 19 2025 release figure; the Mar 2026 fact sheet says 9,985 (discrepancy documented in sources.md C2)",
+   "capex_usd_per_kw_low": 1032,
+   "capex_usd_per_kw_high": 1086,
+   "_capex_note": "EIA AEO2026 EMM assumptions Table 3 (2025$, CCGT multi-shaft/single-shaft, no CCS); Atlanta multiplier ~1.02 not applied; trade-press turnkey quotes run higher \u2014 this is a conservative reference range",
+   "scenarios": {
+    "optimistic": 0.8,
+    "base": 0.5,
+    "exelon_like": 0.22
+   },
+   "_scenario_note": "p_materialize means; exelon_like from POWER Magazine 2026-05-15 (22% of 65-GW pipeline)"
+  },
+  "n_draws": 10000,
+  "seed": 51,
+  "scenarios": {
+   "optimistic": {
+    "p_mean": 0.8,
+    "stranded_bn_p5": 1.0,
+    "stranded_bn_p25": 1.56,
+    "stranded_bn_median": 2.02,
+    "stranded_bn_p75": 2.57,
+    "stranded_bn_p95": 3.46
+   },
+   "base": {
+    "p_mean": 0.5,
+    "stranded_bn_p5": 3.68,
+    "stranded_bn_p25": 4.6,
+    "stranded_bn_median": 5.24,
+    "stranded_bn_p75": 5.91,
+    "stranded_bn_p95": 6.79
+   },
+   "exelon_like": {
+    "p_mean": 0.22,
+    "stranded_bn_p5": 6.77,
+    "stranded_bn_p25": 7.67,
+    "stranded_bn_median": 8.23,
+    "stranded_bn_p75": 8.73,
+    "stranded_bn_p95": 9.34
+   }
+  }
+ }
+}

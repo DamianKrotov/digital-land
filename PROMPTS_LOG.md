@@ -15,5 +15,5 @@ Format: one row per session. "Prompt" = verbatim or faithful summary (keep verba
 
 Notes for the submission email:
 - Tools list to date: Claude (claude.ai), Claude Code; add Remotion (code-based rendering, not generative), and any TTS/image tools if used.
-- Statement suggestion: "AI (Anthropic Claude / Claude Code) was used for literature discovery, code generation, and editing under my direction; all event data was human-verified against primary sources, all statistics are computed by the released code, and all analytical judgments and the final text/narration are my own. Full prompt log attached."
+- Statement suggestion (updated 2026-07-04 to reflect actual workflow): "AI (Anthropic Claude / Claude Code) was used for literature discovery, data collection, source verification, code generation, and editing under my direction. Event data was compiled and checked against primary sources by AI agents that fetched each cited source; I reviewed the dataset, spot-checked flagged judgment calls, and approved it. All statistics are computed by the released code from that data, and all analytical judgments and the final text/narration are my own. Full prompt log attached."
 - Keep this file free of author-identifying info if it will be embedded anywhere other than the email body.

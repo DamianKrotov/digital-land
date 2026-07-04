@@ -1,0 +1,42 @@
+---
+title: "Digital Land: Who Captures the Value When the Cloud Touches the Ground?"
+format:
+  pdf:
+    fontsize: 12pt
+    linestretch: 2
+    geometry: margin=1in
+execute:
+  echo: false
+  warning: false
+---
+
+<!--
+HGSSS 2026 writing contest entry — Theme: Land Value Taxation.
+ANONYMIZED: no author name, school, or identifying info anywhere in this file
+(rules: identity goes in the submission email only — refs/rules.md).
+Length: 10–25 pages double-spaced. Compressed from paper/paper.qmd on essay day
+(plan: Day 9). Structure mirrors the paper minus the methods appendix:
+
+1. Cold open — the $26.1M land / $1.81B servers split (sources.md S4)
+2. George's savannah, compressed (S10 quote, checked against Gutenberg)
+3. Georgia's boom in numbers (S1, S3, S5)
+4. What announcements do to home values — headline result + event-study figure
+   (every number interpolated from ../output/results.json)
+5. The value that may never arrive — fan chart (results.json monte_carlo)
+6. Land value capture as the Georgist remedy (OECD/ITF; Plassmann & Tideman)
+7. Honest limitations paragraph (ARCHITECTURE §7)
+
+DO NOT hand-type any statistic. Same interpolation pattern as paper.qmd.
+-->
+
+```{python}
+#| label: load-results
+import json
+from pathlib import Path
+res_path = Path("../output/results.json")
+res = json.loads(res_path.read_text()) if res_path.exists() else {}
+```
+
+*(Essay body drafted on essay day from the finished paper — this stub exists so
+`quarto render essay/essay.qmd` is wired up and anonymization is checked from
+day one.)*

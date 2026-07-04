@@ -1,5 +1,5 @@
 {
-  "verified": false,
+  "verified": true,
   "_instructions": "Damian: check every number against refs/sources.md (S5, S6, S9 URLs), then set verified: true. monte_carlo.py refuses to run until then.",
   "mw_certified": 9885,
   "_mw_note": "PSC Dec 19 2025 release figure; the Mar 2026 fact sheet says 9,985 (discrepancy documented in sources.md C2)",

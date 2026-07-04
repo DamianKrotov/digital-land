@@ -1,0 +1,26 @@
+{
+ "optimistic": {
+  "p_mean": 0.8,
+  "stranded_bn_p5": 1.0,
+  "stranded_bn_p25": 1.56,
+  "stranded_bn_median": 2.02,
+  "stranded_bn_p75": 2.57,
+  "stranded_bn_p95": 3.46
+ },
+ "base": {
+  "p_mean": 0.5,
+  "stranded_bn_p5": 3.68,
+  "stranded_bn_p25": 4.6,
+  "stranded_bn_median": 5.24,
+  "stranded_bn_p75": 5.91,
+  "stranded_bn_p95": 6.79
+ },
+ "exelon_like": {
+  "p_mean": 0.22,
+  "stranded_bn_p5": 6.77,
+  "stranded_bn_p25": 7.67,
+  "stranded_bn_median": 8.23,
+  "stranded_bn_p75": 8.73,
+  "stranded_bn_p95": 9.34
+ }
+}
