@@ -53,9 +53,104 @@
     "n_treated_zips": 31,
     "n_control_zips": 519,
     "n_ring1_dropped": 109,
-    "pretrend_wald_p": null,
+    "pretrend_wald_p": {},
     "pretrend_n": 23,
     "pretrend_n_sig_5pct": 0,
     "pretrend_mean_att": 0.00120425
+  },
+  "robustness": {
+    "(0) main: not-yet-treated, anticipation 3": {
+      "spec": "(0) main: not-yet-treated, anticipation 3",
+      "att": 0.01242037,
+      "se": 0.02781927,
+      "ci_lo": -0.04210539,
+      "ci_hi": 0.06694613,
+      "n_treated": 31
+    },
+    "(a) never-treated controls": {
+      "spec": "(a) never-treated controls",
+      "att": 0.01336619,
+      "se": 0.02850495,
+      "ci_lo": -0.04250352,
+      "ci_hi": 0.0692359,
+      "n_treated": 31
+    },
+    "(a') dr, no covariates": {
+      "spec": "(a') dr, no covariates",
+      "att": 0.03414852,
+      "se": 0.03592269,
+      "ci_lo": -0.03625995,
+      "ci_hi": 0.104557,
+      "n_treated": 31
+    },
+    "(a'') ipw + covariates": {
+      "spec": "(a'') ipw + covariates",
+      "att": 0.02707374,
+      "se": 0.02947611,
+      "ci_lo": -0.03069943,
+      "ci_hi": 0.08484691,
+      "n_treated": 31
+    },
+    "(b) Sun–Abraham IW, all-horizon post ATT (different estimand — see text)": {
+      "spec": "(b) Sun–Abraham IW, all-horizon post ATT (different estimand — see text)",
+      "att": -0.00969702,
+      "se": 0.00277826,
+      "ci_lo": -0.01514241,
+      "ci_hi": -0.00425163,
+      "n_treated": 31
+    },
+    "(c) Redfin median sale price outcome": {
+      "spec": "(c) Redfin median sale price outcome",
+      "att": -0.0213778,
+      "se": 0.03221703,
+      "ci_lo": -0.08452318,
+      "ci_hi": 0.04176758,
+      "n_treated": 30
+    },
+    "(d) drop 2020-01..2021-12": {
+      "spec": "(d) drop 2020-01..2021-12",
+      "att": 0.00354985,
+      "se": 0.02856812,
+      "ci_lo": -0.05244367,
+      "ci_hi": 0.05954338,
+      "n_treated": 31
+    },
+    "(e) anticipation = 0": {
+      "spec": "(e) anticipation = 0",
+      "att": 0.01010354,
+      "se": 0.02856688,
+      "ci_lo": -0.04588755,
+      "ci_hi": 0.06609462,
+      "n_treated": 31
+    },
+    "(e') anticipation = 6": {
+      "spec": "(e') anticipation = 6",
+      "att": 0.00982659,
+      "se": 0.03092998,
+      "ci_lo": -0.05079616,
+      "ci_hi": 0.07044935,
+      "n_treated": 31
+    },
+    "(g) drop top-3 investment projects": {
+      "spec": "(g) drop top-3 investment projects",
+      "att": 0.01338462,
+      "se": 0.0288865,
+      "ci_lo": -0.04323292,
+      "ci_hi": 0.07000216,
+      "n_treated": 28
+    },
+    "(h) propensity-trimmed controls": {
+      "spec": "(h) propensity-trimmed controls",
+      "att": 0.01097899,
+      "se": 0.02978186,
+      "ci_lo": -0.04739345,
+      "ci_hi": 0.06935143,
+      "n_treated": 31
+    },
+    "placebo": {
+      "p_value": 0.88944724,
+      "B": 199,
+      "actual_att": 0.01242037
+    }
   }
 }

@@ -2,6 +2,21 @@
 title: "Digital Land: Data Center Announcements and the Capture of Community-Created Value in Georgia"
 author: "Damian Krotov"
 date: last-modified
+abstract: |
+  Georgia is the fastest-growing new data-center market in the United States,
+  courted with a sales-tax exemption forgoing roughly \$2.5 billion a year and
+  backed by nearly 10 GW of newly certified generation. Using a hand-built,
+  source-verified dataset of dated Georgia data-center announcements (2015–2026)
+  and Zillow's ZIP-level home value index, I estimate how announcements
+  capitalize into nearby residential property values with the Callaway–Sant'Anna
+  staggered difference-in-differences estimator. Announcements produce no
+  detectable average effect on ZIP-level home values; pre-trends are flat and
+  the result survives a robustness battery. Read through Henry George's theory
+  of rent, the null is informative: the community-created value of the data
+  center boom is not accruing broadly to nearby homeowners, while its
+  documented fiscal costs — the exemption and ratepayer-backstopped generation
+  for load that may never materialize — are socialized. Land value capture,
+  not equipment subsidies, is the remedy George's framework recommends.
 format:
   pdf:
     number-sections: true
@@ -17,86 +32,262 @@ execute:
 import json
 from pathlib import Path
 
-res_path = Path("../output/results.json")
-res = json.loads(res_path.read_text()) if res_path.exists() else {}
-main = res.get("main", {})
-mc = res.get("monte_carlo", {})
+import pandas as pd
 
-def pct(x, digits=1):
-    """log points -> % for prose; returns TODO string when results are absent."""
-    return f"{100 * x:.{digits}f}%" if isinstance(x, (int, float)) else "TODO_RUN_P3"
+res = json.loads(Path("../output/results.json").read_text())
+main, mc = res["main"], res["monte_carlo"]
+ev = pd.read_csv("../data/raw/events.csv", dtype=str).fillna("")
+ev = ev[ev.verified_by_human.str.upper() == "TRUE"]
+inv = pd.to_numeric(ev.investment_usd_m, errors="coerce")
+
+def pct(x, d=1):
+    return f"{100 * x:.{d}f}%"  # pandoc escapes % for LaTeX; no manual escaping
+
+def num(x, d=1):
+    return f"{x:.{d}f}"
 ```
 
-<!--
-Every empirical number in this document is interpolated from output/results.json
-(or refs/sources.md for institutional facts) — never hand-typed. If a value shows
-TODO_RUN_P3, the estimation phase has not produced results yet.
-Structure per CLAUDE.md P6; framing per ARCHITECTURE §12.
--->
+<!-- Every empirical number below is interpolated from output/results.json or the
+event file, or is an institutional fact carried with its refs/sources.md ID
+(S1–S10). No hand-typed statistics. -->
 
 # Introduction
 
-<!-- Hook: the $26M land / $1.8B servers split from the DOAA audit; the question
-"who captures the value when the cloud touches the ground?"; contributions:
-(1) first Georgia evidence, (2) announcement-timing design, (3) hand-built
-event dataset; preview of findings. -->
+When Georgia's state auditors examined four large metro-Atlanta data-center
+projects, the "representative" complex they constructed carried servers and
+electrical equipment worth about \$1.81 billion — sitting on land worth about
+\$26.1 million (S4). That ratio is a modern illustration of the distinction
+Henry George built *Progress and Poverty* around: capital, which human effort
+produces and replaces, and land, whose value is created not by its owner but by
+the community around it [@george1879]. Georgia has chosen to subsidize the
+first — data-center equipment enjoys a sales-tax exemption projected to forgo
+roughly \$2.5 billion in state and local revenue in FY2026, approaching \$3
+billion in 2027 (S1) — while leaving the second untaxed beyond ordinary rates.
 
-# Background: Georgia's data center boom and George's rent
+This paper measures one channel through which the data-center boom could
+create — or destroy — community wealth: the capitalization of project
+*announcements* into nearby residential property values. An announcement is
+George's mechanism compressed into a single dated event: news of collective
+investment (grid capacity, fiber, roads, tax base) arrives, and whatever value
+that news creates accrues to whoever holds title nearby. I hand-build a
+source-verified dataset of `{python} f"{len(ev)}"` dated Georgia data-center
+announcements (2015–2026) totaling over
+\$`{python} f"{inv.sum()/1000:.0f}"` billion in announced investment, match
+them to `{python} f"{main['n_treated_zips']}"` ZIP codes, and estimate
+group-time average treatment effects on Zillow's ZIP-level home value index
+with the @callawaysantanna2021 estimator.
 
-<!-- §2 of ARCHITECTURE: exemption cost ~$2.5B FY2026 (DOAA audit), 9,985 MW
-PSC certification ~80% data centers, failed 2026 bills, phantom-load evidence
-(Exelon ~22%, E3 telemetry). Henry George: settler parable (quote checked
-against primary text), land vs. capital, exemption as inverse-George,
-speculation and socialized risk. Cite refs/sources.md items only. -->
+The answer is a null: the simple average post-announcement effect on log home
+values is `{python} pct(main["att_simple"])` (95% CI
+`{python} pct(main["ci_lo"])` to `{python} pct(main["ci_hi"])`), with flat
+pre-trends (`{python} f"{main['pretrend_n_sig_5pct']}"` of
+`{python} f"{main['pretrend_n']}"` pre-period coefficients significant at 5%).
+Georgia's homeowners near announced sites have not, on average, received a
+speculative windfall — nor suffered a broad disamenity discount — at the ZIP
+level. Section 7 discusses why the null is the analytically useful case for
+the distributional question: the boom's benefits are not diffusing into
+neighboring home equity, while its costs (the exemption, and the risk that
+certified load never materializes) are borne publicly.
+
+# Background: the boom, the exemption, and the risk
+
+Three institutional facts frame the analysis; each is documented in the
+repository's source index with the state's own documents.
+
+**Scale.** As of December 2025 Georgia had an estimated 63 active data
+centers, 35 under construction, and 249 more announced (S3). On December 19,
+2025 the Public Service Commission approved a stipulation certifying 9,885 MW
+of new generation — approximately 80 percent of it expected to power data
+centers — while freezing Georgia Power base rates through 2028 and building a
+menu of remediation measures should contracted load fail to appear (S5).
+
+**Subsidy.** The state's tax expenditure report puts the combined cost of the
+data-center and high-technology equipment exemptions at roughly \$2.5 billion
+in FY2026, rising toward \$3 billion in FY2027 (S1). The state audit's central
+counterfactual finding: about 70 percent of Georgia data-center activity would
+have occurred without the exemption (S2). Every bill that would have curtailed
+the exemption or strengthened ratepayer protection failed in the 2026 session;
+the exemption stands until 2032 (S8).
+
+**Risk.** Nationally, "phantom" interconnection load is documented: Exelon
+reports only about 22 percent of its 65-GW pipeline through 2040 is likely to
+materialize (S6), and telemetry analysis by E3 finds fewer than half of studied
+data centers run above 80 percent of reported peak load (S7). Under the PSC
+stipulation, Georgia households function as residual insurers of certified
+load, mitigated by remediation clauses and a Georgia Power backstop through
+2031 (S5).
+
+# The Georgist frame
+
+George's savannah parable places a settler on land with "absolutely no choice"
+among identical acres; value arrives only as others settle nearby: "He has
+what, were he in a populous district, would make him rich; but he is very
+poor." (S10, *Progress and Poverty*, Bk. IV, Ch. 2). Rent, in this account, is
+community-created, and its private capture is the unearned increment. Four
+mappings organize the paper: (i) an announcement is community-created value
+(or damage) arriving as news, testable as capitalization; (ii) the audit's
+land/equipment split (S4) is George's land–capital distinction in state
+documents; (iii) the exemption is inverse-George — the public subsidizes
+capital while leaving site-value gains private; (iv) the stipulation
+socializes speculative risk, George's critique of land speculation translated
+to interconnection queues. The remedy George's framework implies — land value
+taxation / land value capture — taxes the measured uplift (where it exists)
+without taxing the servers [@plassmanntideman2000].
 
 # Data
 
-<!-- D1 hand-built announcement events (n = `{python} main.get("n_treated_zips", "TODO_RUN_P3")`
-treated ZIPs after verification); D2 Zillow ZHVI ZIP monthly smoothed SA;
-D3 ZCTA polygons + ACS covariates; ZIP≈ZCTA caveat. Map + timeline figures
-from output/events_qc.html analogs. -->
+**Events (D1).** The unit of treatment is a dated public announcement of a
+data-center project. Each of the `{python} f"{len(ev)}"` verified events
+carries company, site location, the earliest credible public report date,
+announced investment, capacity and acreage where stated, current status, and
+at least one fetched source URL; every row was verified against its source,
+with judgment calls logged (`data/raw/verification_log.md`). Discovery drew on
+state and county press, trade press (Data Center Frontier, DCD), local
+outlets, and development-authority filings. Withdrawn and denied projects are
+retained — an announcement is news regardless of what later happens, and the
+"value that never materializes" is part of the research question.
+
+**Outcomes (D2).** Zillow's ZHVI, ZIP-level, monthly, smoothed and seasonally
+adjusted; Redfin's ZIP median sale price is a robustness outcome. The panel
+covers `{python} f"{main['n_treated_zips'] + main['n_control_zips']}"` Georgia
+ZIPs from 2012.
+
+**Geography and covariates (D3).** Census ZCTA polygons assign each site to a
+ZIP (stated ZIP when sources give one, point-in-polygon on geocoded
+coordinates otherwise) and identify first-ring neighbors; ACS 2023 5-year
+population and median household income enter as covariates. ZIP≈ZCTA is
+assumed with the standard caveat.
 
 # Empirical strategy
 
-<!-- Callaway–Sant'Anna group-time ATTs, not-yet-treated controls, doubly robust,
-anticipation = 3; why static TWFE fails (Goodman-Bacon); ring-1 exclusion;
-pre-committed hypotheses H1a/H1b/H0 (this file was committed to git before
-estimation — cite commit hash). -->
+Let $g$ index announcement month. I estimate group-time effects
+$ATT(g,t)$ on $\log(\text{ZHVI})$ with the @callawaysantanna2021 estimator:
+not-yet-treated ZIPs as controls (never-treated as robustness — treated ZIPs
+are compared primarily to future siting corridors, not to systematically
+different rural ZIPs), three months of permitted anticipation (land-assembly
+rumors precede press releases), universal base period, covariate adjustment by
+log population and log income, and clustering by ZIP. Static two-way fixed
+effects would be contaminated by forbidden comparisons under staggered timing
+and heterogeneous effects [@goodmanbacon2021]; the interaction-weighted
+estimator of @sunabraham2021 is reported as robustness. First-ring neighbor
+ZIPs are excluded from the control pool (SUTVA hygiene). Design choices follow
+the practitioner synthesis in @roth2023.
+
+One pre-registered choice failed mechanically and is documented rather than
+hidden: the doubly-robust estimator cannot fit its propensity-score component
+when an announcement cohort contains a single treated ZIP, which is the
+typical case here; nearly all $ATT(g,t)$ return missing. The outcome-regression
+estimator retains the covariate adjustment and is the primary specification;
+doubly-robust without covariates and IPW variants bracket it in the
+robustness table.
+
+Hypotheses were committed to git before estimation: H1a (premium), H1b
+(discount), H0 (no detectable effect, consistent with the Virginia
+evidence of @priest2026).
 
 # Results
-
-The headline simple ATT on log home value is `{python} pct(main.get("att_simple"))`
-(95% CI `{python} pct(main.get("ci_lo"))` to `{python} pct(main.get("ci_hi"))`),
-across `{python} main.get("n_treated_zips", "TODO_RUN_P3")` treated ZIPs against
-`{python} main.get("n_control_zips", "TODO_RUN_P3")` never/not-yet-treated controls.
 
 ```{python}
 #| output: asis
 fig = Path("../output/figs/eventstudy.pdf")
-print("![Event-study path of announcement effects](../output/figs/eventstudy.pdf)"
-      if fig.exists() else "*(Event-study figure pending: run `make estimate` after verification.)*")
+print("![Event-study path of announcement effects on log ZHVI. CS(2021), "
+      "outcome-regression, not-yet-treated controls, anticipation = 3, 95% "
+      "bands.](../output/figs/eventstudy.pdf)"
+      if fig.exists() else "*(Event-study figure pending: run `make estimate`.)*")
 ```
+
+The headline estimate is `{python} pct(main["att_simple"])` on log home value
+(SE `{python} pct(main["se_simple"])`; 95% CI `{python} pct(main["ci_lo"])`
+to `{python} pct(main["ci_hi"])`), across
+`{python} f"{main['n_treated_zips']}"` treated ZIPs against
+`{python} f"{main['n_control_zips']}"` controls
+(`{python} f"{main['n_ring1_dropped']}"` first-ring neighbors excluded). The
+dynamic path is flat: pre-period coefficients average
+`{python} pct(main["pretrend_mean_att"], 2)` with
+`{python} f"{main['pretrend_n_sig_5pct']}"` of
+`{python} f"{main['pretrend_n']}"` significant at 5%, and post-period
+estimates oscillate around zero through 36 months. The design can rule out
+average effects larger than roughly ±5–7 log points; it cannot — and does not
+claim to — detect hyperlocal effects within a mile of a fence line, which
+ZIP-level smoothed indices average away.
 
 # Robustness
 
-<!-- Table from output/tables/robustness_table.html; placebo p-value; overlap plot. -->
+```{python}
+#| output: asis
+rob_path = Path("../output/robustness.csv")
+if rob_path.exists():
+    rob = pd.read_csv(rob_path)
+    rob["95% CI"] = rob.apply(lambda r: f"[{100*r.ci_lo:.1f}, {100*r.ci_hi:.1f}]", axis=1)
+    rob["ATT (%)"] = (100 * rob.att).round(2)
+    rob["SE (%)"] = (100 * rob.se).round(2)
+    out = rob[["spec", "ATT (%)", "SE (%)", "95% CI", "n_treated"]]
+    print(out.to_markdown(index=False))
+    plc = res.get("robustness", {}).get("placebo", {})
+    if plc:
+        print(f"\n\nA permutation placebo reassigning announcement dates uniformly "
+              f"over the observed range (B = {plc['B']}) yields "
+              f"p = {plc['p_value']:.3f} for the actual estimate.")
+    print("\n\nRow (b) is not directly comparable to the others: Sun–Abraham's "
+          "interaction-weighted ATT equal-weights every post horizon (up to "
+          "+131 months for the earliest cohort) rather than the CS simple "
+          "aggregation, which is why its estimate is small, negative, and "
+          "tightly estimated; window-capping it to +36 months produces "
+          "degenerate singleton cells. Its substantive message matches the "
+          "rest of the table: no large positive capitalization.")
+else:
+    print("*(Robustness table pending: run `make robustness`.)*")
+```
 
 # Who bears the risk that the value never arrives?
 
-<!-- RQ2: stipulation mechanics; ILLUSTRATIVE Monte Carlo fan chart
-(output/figs/stranded_fan.pdf); land value capture as remedy. -->
+The capitalization estimate answers who *gains*; the stipulation decides who
+*insures*. To communicate the asymmetry — not to estimate a causal quantity —
+an illustrative Monte Carlo prices the certified-but-unmaterialized load:
+`{python} f"{mc['params']['mw_certified']:,}"` MW certified (S5), materialization
+probability drawn around three scenarios (optimistic 0.8; base 0.5; the
+Exelon-like 0.22 of S6), and combined-cycle replacement capital cost drawn
+from the EIA reference range (S9).
 
 ```{python}
 #| output: asis
 fan = Path("../output/figs/stranded_fan.pdf")
-print("![ILLUSTRATIVE stranded-cost simulation](../output/figs/stranded_fan.pdf)"
-      if fan.exists() else "*(Fan chart pending: verify refs/mc_params.json, then run `make mc`.)*")
+if fan.exists():
+    s = mc["scenarios"]
+    line = "; ".join(
+        f"{k}: median \\${v['stranded_bn_median']:.1f}B "
+        f"[\\${v['stranded_bn_p5']:.1f}, \\${v['stranded_bn_p95']:.1f}]"
+        for k, v in s.items()
+    )
+    print("![ILLUSTRATIVE stranded-cost simulation (10,000 draws, seed 51). "
+          "Not a causal estimate.](../output/figs/stranded_fan.pdf)\n\n"
+          f"Scenario medians and 90% ranges: {line}.")
+else:
+    print("*(Fan chart pending: run `make mc`.)*")
 ```
+
+Put together: measured private gains to nearby homeowners are approximately
+zero; the public's exposure — \$2.5 billion a year in forgone revenue (S1) plus
+billions in contingent stranded-capacity risk — is not. George's remedy would
+invert the arrangement: exempt the \$1.81 billion of servers, tax the site
+value the community creates, and let the public capture the uplift where and
+when it appears.
 
 # Limitations
 
-<!-- The seven items of ARCHITECTURE §7, verbatim in spirit: siting endogeneity,
-date measurement error, ZIP aggregation masking hyperlocal effects, SUTVA,
-scope, AI disclosure pointer. -->
+(1) Siting is endogenous; developers choose growth corridors. Not-yet-treated
+controls, covariate adjustment, and flat pre-trends mitigate but do not prove;
+conclusions are stated as "capitalization consistent with," never causality
+established. (2) Announcement dates carry measurement error (rumors precede
+pressers); the three-month anticipation window absorbs some, and attenuation
+would bias toward the null. (3) ZIP-level smoothed indices mask hyperlocal
+effects; a null here does not contradict fence-line testimony, and
+parcel-level analysis is future work. (4) Adjacent-ZIP spillovers are handled
+by exclusion, not modeling. (5) Findings are Georgia, 2015–2026, residential;
+nothing here is investment, legal, or tax advice. (6) AI assistance was used
+for data collection, source verification, and code under the author's
+direction and is disclosed per contest rules; every row of the event dataset
+carries its source, and every statistic in this paper is computed by the
+released pipeline from `output/results.json`.
 
 # References
