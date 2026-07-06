@@ -29,3 +29,8 @@ video/out/
 
 # OS
 .DS_Store
+
+# model objects are large (170MB+) and regenerable via make estimate
+output/models/
+output/*.log
+output/placebo_draws.csv
