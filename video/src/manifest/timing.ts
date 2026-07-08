@@ -38,7 +38,7 @@ export const SCENES: SceneSpec[] = [
       {startSec: 5.5, text: 'The servers and electrical equipment inside it: one-point-eight-one billion dollars.'},
       {startSec: 10.5, text: 'The land underneath: twenty-six million.'},
       {startSec: 14.0, text: 'One of these gets a tax exemption worth billions a year. Guess which one.'},
-      {startSec: 19.5, text: 'This is a story about land — and about who gets paid when the cloud touches the ground.'},
+      {startSec: 19.5, text: 'This is a story about land — and about who actually gets paid when the boom moves in.'},
     ],
   },
   {

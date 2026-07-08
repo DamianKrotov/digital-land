@@ -56,8 +56,23 @@ export const S4EventStudy: React.FC<SceneProps> = ({sceneFrames, spec}) => {
   const chips = [...h.robustness_specs.map((s) => ({label: shortLabel(s.label), value: fmtPct(s.att_pct), risk: false})),
     {label: `placebo, B=${h.placebo_B}`, value: `p = ${h.placebo_p.toFixed(3)}`, risk: true}];
 
+  const headerIn = interpolate(frame, [cue(3), cue(3) + 14], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
   return (
     <AbsoluteFill style={{backgroundColor: C.bg}}>
+      {/* what this chart IS — average over all treated ZIPs, event time not calendar time */}
+      <div style={{position: 'absolute', top: 44, left: 250, opacity: headerIn * (chipsShowing ? 0.4 : 1)}}>
+        <div style={{...type.label, fontSize: 28, color: C.text}}>
+          ALL {h.n_treated_zips} ANNOUNCEMENT ZIPs, AVERAGED — not one site
+        </div>
+        <div style={{...type.tag, color: C.textDim, marginTop: 6}}>
+          announcements span 2015–2026; the x-axis is each ZIP&apos;s own clock —
+          month 0 = the day its announcement landed
+        </div>
+      </div>
       <svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{opacity: 1}}>
         <g opacity={chartDim}>
           {/* axes */}
@@ -77,7 +92,7 @@ export const S4EventStudy: React.FC<SceneProps> = ({sceneFrames, spec}) => {
             </text>
           ))}
           <text x={(X0 + X1) / 2} y={Y1 + 86} fill={C.textDim} fontFamily={type.label.fontFamily} fontSize={24} textAnchor="middle" opacity={axisIn}>
-            months since announcement
+            months before / after each ZIP&apos;s own announcement (event time)
           </text>
           <text x={X0 - 150} y={(Y0 + Y1) / 2} fill={C.textDim} fontFamily={type.label.fontFamily} fontSize={24} textAnchor="middle" transform={`rotate(-90 ${X0 - 150} ${(Y0 + Y1) / 2})`} opacity={axisIn}>
             effect on home values

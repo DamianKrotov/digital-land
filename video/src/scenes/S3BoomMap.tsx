@@ -4,6 +4,7 @@ import videoData from '../data/video_data.json';
 import {VideoData} from '../data/types';
 import {C, type} from '../lib/theme';
 import {daysSinceEpoch, fmtDateTicker, fmtUSD} from '../lib/format';
+import {Counter} from '../components/Counter';
 import {SourceTag} from '../components/SourceTag';
 import {SceneProps, useCue} from './sceneProps';
 
@@ -67,7 +68,7 @@ export const S3BoomMap: React.FC<SceneProps> = ({sceneFrames, spec}) => {
   });
 
   const scaleF = 940 / data.map.viewBox.h;
-  const counter = (label: string, value: string, sub?: string) => (
+  const counter = (label: string, value: React.ReactNode, sub?: string) => (
     <div style={{marginBottom: 44}}>
       <div style={{...type.hero, fontSize: 76, color: C.land}}>{value}</div>
       <div style={{...type.label, color: C.textDim, marginTop: 6}}>{label}</div>
@@ -86,7 +87,16 @@ export const S3BoomMap: React.FC<SceneProps> = ({sceneFrames, spec}) => {
           `disclosed for ${data.meta.n_events_with_investment} of ${data.meta.n_events} projects`,
         )}
         {frame >= cue(35) &&
-          counter('MW certified, Dec 2025', (data.facts.psc_mw_certified.value as number).toLocaleString('en-US'), `≈${data.facts.psc_dc_share_pct.value}% for data centers`)}
+          counter(
+            'MW of new generation certified',
+            <Counter
+              value={data.facts.psc_mw_certified.value as number}
+              format={(n) => Math.round(n).toLocaleString('en-US')}
+              startFrame={cue(35)}
+              durFrames={40}
+            />,
+            `in one PSC vote, Dec 2025 — ≈${data.facts.psc_dc_share_pct.value}% for data centers`,
+          )}
         {frame >= cue(27.5) && frame < cue(35) && (
           <div style={{...type.label, color: C.textDim}}>
             statewide: {String(data.facts.statewide_active.value)} active ·{' '}

@@ -59,13 +59,39 @@ export const S2Parable: React.FC<SceneProps> = ({sceneFrames, spec}) => {
       <svg width={1920} height={1080} viewBox="0 0 1920 1080">
         {/* horizon */}
         <line x1={0} y1={700} x2={1920} y2={700} stroke={C.ink} strokeWidth={2.5} />
-        {/* wagon */}
-        <g transform={`translate(${wagonX} 668)`} opacity={frame < cue(10) ? 1 : Math.max(0, 1 - (frame - cue(10)) / 20)}>
-          <rect x={-38} y={-26} width={64} height={26} fill="none" stroke={C.ink} strokeWidth={3} />
-          <path d="M -38 -26 Q -6 -52 26 -26" fill="none" stroke={C.ink} strokeWidth={3} />
-          <circle cx={-20} cy={6} r={11} fill="none" stroke={C.ink} strokeWidth={3} />
-          <circle cx={12} cy={6} r={11} fill="none" stroke={C.ink} strokeWidth={3} />
-        </g>
+        {/* covered wagon: canopy ribs, rotating spoked wheels, gentle bob */}
+        {(() => {
+          const bob = Math.sin(frame / 2.6) * 1.6;
+          const rot = (wagonX * 5.2) % 360; // wheels roll with travel, not time
+          const wheel = (cx: number, r: number) => (
+            <g transform={`translate(${cx} 8) rotate(${rot})`}>
+              <circle r={r} fill="none" stroke={C.ink} strokeWidth={3.2} />
+              <circle r={2.6} fill={C.ink} />
+              {[0, 45, 90, 135].map((a) => (
+                <line key={a} x1={-r + 2} y1={0} x2={r - 2} y2={0} transform={`rotate(${a})`} stroke={C.ink} strokeWidth={2} />
+              ))}
+            </g>
+          );
+          return (
+            <g
+              transform={`translate(${wagonX} ${666 + bob})`}
+              opacity={frame < cue(10) ? 1 : Math.max(0, 1 - (frame - cue(10)) / 20)}
+            >
+              {/* bed */}
+              <path d="M -52 -24 L 44 -24 L 38 -2 L -46 -2 Z" fill={C.bgWhite} stroke={C.ink} strokeWidth={3.2} />
+              {/* canopy with ribs */}
+              <path d="M -50 -24 Q -50 -62 -14 -64 L 16 -64 Q 46 -62 44 -24" fill={C.bgWhite} stroke={C.ink} strokeWidth={3.2} />
+              {[-34, -14, 6, 26].map((x) => (
+                <path key={x} d={`M ${x} -24 Q ${x - 2} -50 ${x - 6} -58`} fill="none" stroke={C.ink} strokeWidth={1.8} opacity={0.7} />
+              ))}
+              {/* tongue + driver perch */}
+              <line x1={44} y1={-8} x2={78} y2={-14} stroke={C.ink} strokeWidth={3} />
+              <rect x={36} y={-34} width={14} height={8} fill={C.ink} />
+              {wheel(-26, 13)}
+              {wheel(22, 16)}
+            </g>
+          );
+        })()}
         {/* settlers */}
         {Array.from({length: nVisible}, (_, i) => {
           const p = housePos(i);

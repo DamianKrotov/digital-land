@@ -56,7 +56,9 @@ export const S6Remedy: React.FC<SceneProps> = ({sceneFrames, spec}) => {
   const taxIn = interpolate(frame, [cue(9), cue(9) + 8], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const struck = frame >= cue(23.5);
   const swapIn = interpolate(frame, [cue(23.5), cue(23.5) + 10], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-  const lineY = interpolate(frame, [cue(14), cue(20)], [860, 500], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  const panelAIn = interpolate(frame, [cue(14), cue(14) + 14], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  const panelBIn = interpolate(frame, [cue(18.5), cue(18.5) + 14], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  const panelDraw = interpolate(frame, [cue(14) + 8, cue(19)], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const questionIn = interpolate(frame, [cue(29), cue(29) + 16], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const zoom = interpolate(frame, [cue(29), sceneFrames], [1, 0.97], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
 
@@ -75,22 +77,57 @@ export const S6Remedy: React.FC<SceneProps> = ({sceneFrames, spec}) => {
     </div>
   );
 
+  // mini-panel: how land value capture behaves in the two futures
+  const panel = (
+    x: number,
+    inT: number,
+    title: string,
+    sub: string,
+    rising: boolean,
+  ) => (
+    <g transform={`translate(${x} 645)`} opacity={inT}>
+      <rect x={0} y={0} width={660} height={190} rx={10} fill="rgba(21,26,33,0.9)" stroke={C.grid} strokeWidth={1.5} />
+      {rising ? (
+        <>
+          {/* site value rises -> the shaded lift is what the public captures */}
+          <path
+            d={`M 40 150 L ${40 + 260 * panelDraw} ${150 - 80 * panelDraw} L ${40 + 260 * panelDraw} 150 Z`}
+            fill={C.land}
+            opacity={0.35}
+          />
+          <path d={`M 40 150 L ${40 + 260 * panelDraw} ${150 - 80 * panelDraw}`} stroke={C.land} strokeWidth={4} fill="none" />
+          {panelDraw > 0.9 && (
+            <text x={315} y={96} fill={C.land} fontFamily={type.tag.fontFamily} fontSize={21}>
+              ← the lift → public revenue
+            </text>
+          )}
+        </>
+      ) : (
+        <>
+          <path d={`M 40 120 L ${40 + 260 * panelDraw} 120`} stroke={C.textDim} strokeWidth={4} fill="none" strokeDasharray="6 8" />
+          {panelDraw > 0.9 && (
+            <text x={315} y={126} fill={C.textDim} fontFamily={type.tag.fontFamily} fontSize={21}>
+              nothing to tax — no bailout
+            </text>
+          )}
+        </>
+      )}
+      <text x={40} y={40} fill={C.text} fontFamily={type.label.fontFamily} fontSize={24}>
+        {title}
+      </text>
+      <text x={40} y={178} fill={C.textDim} fontFamily={type.tag.fontFamily} fontSize={19}>
+        {sub}
+      </text>
+    </g>
+  );
+
   return (
     <AbsoluteFill style={{backgroundColor: C.bg}}>
-      {/* the land line, rising */}
-      <div
-        style={{
-          position: 'absolute',
-          top: lineY,
-          left: 64,
-          height: 3,
-          width: 1792,
-          background: C.land,
-          opacity: 0.5,
-          boxShadow: `0 0 24px 2px ${C.land}`,
-        }}
-      />
-      <div style={{position: 'absolute', top: 200, left: 240, opacity: cardIn, transform: `scale(${zoom})`}}>
+      <svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{position: 'absolute', inset: 0}}>
+        {panel(240, panelAIn, 'if the boom is real: site value rises', 'a land value tax collects that lift for the public', true)}
+        {panel(990, panelBIn, 'if it never materializes: value stays flat', 'no phantom tax base, no stranded-cost bailout', false)}
+      </svg>
+      <div style={{position: 'absolute', top: 140, left: 240, opacity: cardIn, transform: `scale(${zoom})`}}>
         {row(
           'the servers — capital, human effort',
           (data.facts.equipment_usd_bn.value as number) * 1e9,
@@ -112,7 +149,7 @@ export const S6Remedy: React.FC<SceneProps> = ({sceneFrames, spec}) => {
       <div
         style={{
           position: 'absolute',
-          bottom: 150,
+          bottom: 110,
           left: 240,
           width: 1440,
           ...type.h1,

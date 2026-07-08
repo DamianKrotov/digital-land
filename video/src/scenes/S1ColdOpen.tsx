@@ -33,6 +33,17 @@ export const S1ColdOpen: React.FC<SceneProps> = ({sceneFrames, spec}) => {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
+  // "this one" callout on the exempt number, then the disparity bars
+  const calloutIn = interpolate(frame, [cue(14), cue(14) + 10], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const barsIn = interpolate(frame, [cue(15.5), cue(17.5)], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+  const BAR_MAX = 520; // px for the larger value; the land bar scales truly
+  const landBarW = Math.max(3, BAR_MAX * (land / equipment) * barsIn);
 
   const row = (
     label: string,
@@ -58,18 +69,57 @@ export const S1ColdOpen: React.FC<SceneProps> = ({sceneFrames, spec}) => {
         })}
         {row('the land under them', land, C.land, 10.5)}
       </div>
+      {/* "this one" callout on the exempt (cyan) number */}
       <div
         style={{
           position: 'absolute',
-          bottom: 320,
+          top: 250,
+          left: 1210,
+          opacity: calloutIn,
+          transform: `translateX(${(1 - calloutIn) * 30}px)`,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+        }}
+      >
+        <div style={{...type.label, fontSize: 34, color: C.text}}>←</div>
+        <div
+          style={{
+            ...type.label,
+            fontSize: 30,
+            color: C.capital,
+            border: `2px solid ${C.capital}`,
+            borderRadius: 6,
+            padding: '6px 16px',
+          }}
+        >
+          this one — tax-exempt
+        </div>
+      </div>
+      {/* the disparity, drawn to scale (right column, under the callout) */}
+      {barsIn > 0 && (
+        <div style={{position: 'absolute', top: 420, left: 1210, opacity: Math.min(1, barsIn * 2)}}>
+          <div style={{...type.tag, color: C.textDim, marginBottom: 14}}>drawn to scale:</div>
+          <div style={{...type.label, fontSize: 22, color: C.capital, marginBottom: 6}}>equipment</div>
+          <div style={{width: BAR_MAX * barsIn, height: 34, background: C.capital, borderRadius: 4, marginBottom: 22}} />
+          <div style={{...type.label, fontSize: 22, color: C.land, marginBottom: 6}}>
+            the land — {((land / equipment) * 100).toFixed(1)}% of that
+          </div>
+          <div style={{width: landBarW, height: 34, background: C.land, borderRadius: 2}} />
+        </div>
+      )}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 300,
           left: 240,
           ...type.h2,
           color: C.text,
           opacity: taglineIn,
-          maxWidth: 1300,
+          maxWidth: 1400,
         }}
       >
-        Who gets paid when the cloud touches the ground?
+        When the boom moves in, who actually gets paid?
       </div>
       <div
         style={{

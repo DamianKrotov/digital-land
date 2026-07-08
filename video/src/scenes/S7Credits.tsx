@@ -4,9 +4,10 @@ import {C, type} from '../lib/theme';
 import {SceneProps, useCue} from './sceneProps';
 
 const LINES = [
+  'Based on the working paper “Digital Land: Data-Center Announcements and the Capture of Community-Created Value in Georgia” (2026)',
   'Data: Zillow ZHVI · GA DOAA audit (Dec 2025) · GA PSC (Dec 2025) · OPB Tax Expenditure Report FY2027 · EIA · Project Gutenberg #55308',
-  'Method: Callaway & Sant’Anna (2021) staggered difference-in-differences · pre-registered hypotheses · 199-draw permutation placebo',
-  'Every figure computed by the released pipeline from public records — no hand-typed statistics',
+  'Method: Callaway & Sant’Anna (2021) staggered difference-in-differences · pre-registered hypotheses · permutation placebo',
+  'Every figure computed by open code from public records — full replication repository linked with the submission',
   'Made with Remotion · Music: CC0 · Typeface: IBM Plex (OFL)',
   'Research, data verification, and code assisted by AI (Anthropic Claude) under the author’s direction — prompt log disclosed with submission',
 ];
@@ -24,7 +25,7 @@ export const S7Credits: React.FC<SceneProps> = ({sceneFrames, spec}) => {
           DIGITAL LAND
         </div>
         <div style={{...type.label, color: C.land, marginTop: 12, opacity: t1}}>
-          who captures the value when the cloud touches the ground?
+          who gains from the data-center boom — and who carries the risk?
         </div>
       </div>
       <div style={{position: 'absolute', bottom: 190, left: '50%', transform: 'translateX(-50%)', width: 1560, textAlign: 'center'}}>
