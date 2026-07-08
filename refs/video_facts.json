@@ -1,0 +1,19 @@
+{
+  "verified": false,
+  "_instructions": "Damian: check every value against its refs/sources.md row (open the URL), then set verified: true. In final render mode the video refuses to build while this is false; the animatic renders with a DRAFT badge instead. Same gate pattern as refs/mc_params.json.",
+  "facts": {
+    "equipment_usd_bn": {"value": 1.81, "label": "servers & electrical equipment, 'representative' complex", "source": "refs/sources.md#S4"},
+    "land_usd_m": {"value": 26.1, "label": "land, 'representative' complex", "source": "refs/sources.md#S4"},
+    "exemption_fy26_usd_bn": {"value": 2.47, "label": "state+local forgone revenue FY2026 (both tech exemptions)", "source": "refs/sources.md#S1"},
+    "exemption_fy27_usd_bn": {"value": 2.99, "label": "state+local forgone revenue FY2027", "source": "refs/sources.md#S1"},
+    "redundancy_pct": {"value": 70, "label": "share of GA data-center construction that would exist without the exemption", "source": "refs/sources.md#S2"},
+    "statewide_active": {"value": 63, "label": "active data centers, Dec 2025", "source": "refs/sources.md#S3"},
+    "statewide_under_construction": {"value": 35, "label": "under construction, Dec 2025", "source": "refs/sources.md#S3"},
+    "statewide_announced": {"value": 249, "label": "announced, Dec 2025", "source": "refs/sources.md#S3"},
+    "psc_mw_certified": {"value": 9885, "label": "MW certified Dec 19 2025 (release figure; fact sheet says 9,985)", "source": "refs/sources.md#S5"},
+    "psc_dc_share_pct": {"value": 80, "label": "approx. share of certified MW for data centers", "source": "refs/sources.md#S5"},
+    "exelon_materialize_pct": {"value": 22, "label": "Exelon: share of 65-GW pipeline likely to materialize", "source": "refs/sources.md#S6"},
+    "george_quote": {"value": "He has what, were he in a populous district, would make him rich; but he is very poor.", "label": "Progress and Poverty, Bk IV Ch 2 (US spelling edition)", "source": "refs/sources.md#S10"},
+    "twiggs_pop_k": {"value": 8, "label": "Twiggs County population, thousands — TODO_VERIFY against Census QuickFacts before flipping verified (or cut the clause from S3 VO)", "source": "TODO_VERIFY"}
+  }
+}

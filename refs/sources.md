@@ -35,6 +35,16 @@ corrected attributions in all deliverables (details below the table):
 scenario means {optimistic 0.8, base 0.5, exelon 0.22} (0.22 from S6).
 Damian: check each against the URLs above, then set `"verified": true`.
 
+## Video asset licensing (IP hygiene, guardrail #7)
+
+| Asset | License | Source | Receipt |
+|---|---|---|---|
+| Remotion (render engine) | Company License — **free for individuals & ≤3-person companies**; this is an individual student project | remotion.dev/license (accessed 2026-07-08) | package-lock.json pins 4.0.486 |
+| IBM Plex Sans / Mono | SIL OFL 1.1 (redistribution permitted) | npm `@ibm/plex-sans` / `@ibm/plex-mono` (pinned) | `video/public/fonts/OFL.txt` |
+| Music bed | **PENDING** — must be CC0 with receipt (e.g., freepd.com) BEFORE final render; add row + file hash here and `video/public/audio/music/LICENSE.txt` | — | pending |
+| All figures, map, glyphs | self-generated in code from public data | this repo | video/src/ |
+| George quote | public domain | Project Gutenberg #55308 | S10 above |
+
 ## Literature (cited in paper; no numbers borrowed without page refs)
 
 Oates 1969 JPE · Davis 2011 REStat · Currie–Davis–Greenstone–Walker 2015 AER ·
